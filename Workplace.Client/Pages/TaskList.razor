@@ -1,9 +1,10 @@
 ﻿@page "/"
+
 @inject IDataService data
 
 <PageTitle>Список задач</PageTitle>
 
-<h3>Спиок задач</h3>
+<h3>Список задач</h3>
 
 @if (tasks == null)
 {
@@ -34,7 +35,9 @@ else
 
     async Task AddTaskItemAsync()
     {
-        TaskItemDTO newTask = new() { Id = 4, Name = "Задача 4", Description = "Описание 4" };
+        int lastTaskId = tasks!.Any() ? tasks!.Last().Id : 0;
+
+        TaskItemDTO newTask = new() { Id = lastTaskId+1, Name = $"Задача {lastTaskId+1}", Description = $"Описание {lastTaskId+1}", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit." };
         await data.AddAsync(newTask);
     }
 

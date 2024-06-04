@@ -1,5 +1,7 @@
 ﻿@page "/tasklist/{Id:int}"
 
+<PageTitle>Форма редактирования задачи</PageTitle>
+
 <h3>Форма редактирования @Id</h3>
 
 <EditForm>
@@ -7,6 +9,8 @@
 </EditForm>
 
 @code {
+    [Parameter, EditorRequired]
+    public TaskItemDTO? TaskItem { get; set; }
     [Parameter]
     public int Id { get; set; }
 }
