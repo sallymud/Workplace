@@ -1,11 +1,26 @@
 ﻿@page "/tasklist/{Id:int}"
 
+@inject IDataService data
+@inject NavigationManager navigate
+
 <PageTitle>Форма редактирования задачи</PageTitle>
 
-<h3>Форма редактирования @Id</h3>
+<h3>Форма редактирования #@Id</h3>
 
-<EditForm>
-
+<EditForm Model="@TaskItem" OnSubmit="SaveTask">
+    <p>
+        Название:<br />
+        <InputText id="name" class="form-control" style="width: 500px;" @bind-Value="TaskItem!.Name" />
+    </p>
+    <p>
+        Описание:<br />
+        <InputText id="description" class="form-control" style="width: 500px; margin-top: 7px;" @bind-Value="TaskItem!.Description" />
+    </p>
+    <p>
+        Текст:<br />
+        <InputTextArea id="text" class="form-control" style="width: 500px; height: 150px; margin-top: 5px; resize: both; min-width: 500px; max-width: 50%; min-height: 150px; max-height: 350px;" @bind-Value="TaskItem!.Text" />
+    </p>
+    <button type="submit" class="btn btn-success">Сохранить</button>
 </EditForm>
 
 @code {
@@ -13,4 +28,15 @@
     public TaskItemDTO? TaskItem { get; set; }
     [Parameter]
     public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IEnumerable<TaskItemDTO>? rawData = await data.GetDataAsync();
+        TaskItem = rawData.ElementAt(Id - 1);
+    }
+    void SaveTask()
+    {
+        data.EditAsync(TaskItem!);
+        navigate.NavigateTo("/");
+    }
 }

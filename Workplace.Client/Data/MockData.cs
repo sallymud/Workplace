@@ -17,7 +17,19 @@ namespace Workplace.Client.Data
 
         public async Task RemoveAsync(TaskItemDTO dto)
         {
-            await Task.Run(() => tasks.Remove(dto));
+            int id = dto.Id - 1;
+            await Task.Run(() => {
+                tasks.Remove(dto);
+                for (int i = id; i < tasks.Count; i++)
+                {
+                    if (tasks[i] != null)
+                        tasks[i].Id--;
+                }});
+        }
+
+        public async Task EditAsync(TaskItemDTO dto)
+        {
+            await Task.Run(() => tasks[dto.Id - 1] = dto);
         }
 
         public async Task<IEnumerable<TaskItemDTO>> GetDataAsync()

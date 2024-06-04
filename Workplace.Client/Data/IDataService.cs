@@ -7,5 +7,6 @@ namespace Workplace.Client.Data
         Task<IEnumerable<TaskItemDTO>> GetDataAsync();
         Task AddAsync(TaskItemDTO dto);
         Task RemoveAsync(TaskItemDTO dto);
+        Task EditAsync(TaskItemDTO dto);
     }
 }

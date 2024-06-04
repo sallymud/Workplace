@@ -13,11 +13,11 @@
 else
 {
     <div>
-        <button type="button" class="btn btn-success" @onclick="AddTaskItemAsync">Новая задача</button>
+        <button type="button" class="btn btn-primary" style="position: absolute; top: 0; left: 0; margin: 70px 0 0 500px" @onclick="AddTaskItemAsync">Новая задача</button>
     </div>
     @foreach (var task in tasks)
     {
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 18rem; margin: 5px 10px 5px 0; display: inline-block;">
             <button type="button" class="btn-close" aria-label="Close" 
                 style="scale: 0.7; position: absolute; right: 0; margin: 10px 10px 0 0" @onclick="() => RemoveTaskItemAsync(task)"></button>
             <TaskCard TaskItem="task" />
@@ -35,9 +35,12 @@ else
 
     async Task AddTaskItemAsync()
     {
-        int lastTaskId = tasks!.Any() ? tasks!.Last().Id : 0;
-
-        TaskItemDTO newTask = new() { Id = lastTaskId+1, Name = $"Задача {lastTaskId+1}", Description = $"Описание {lastTaskId+1}", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit." };
+        TaskItemDTO newTask = new() { 
+            Id = tasks!.Count() + 1, 
+            Name = $"Задача {tasks!.Count() + 1}", 
+            Description = $"Описание {tasks!.Count() + 1}", 
+            Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit." 
+            };
         await data.AddAsync(newTask);
     }
 
