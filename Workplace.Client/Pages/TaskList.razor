@@ -18,9 +18,7 @@ else
     @foreach (var task in tasks)
     {
         <div class="card" style="width: 18rem; margin: 5px 10px 5px 0; display: inline-block;">
-            <button type="button" class="btn-close" aria-label="Close" 
-                style="scale: 0.7; position: absolute; right: 0; margin: 10px 10px 0 0" @onclick="() => RemoveTaskItemAsync(task)"></button>
-            <TaskCard TaskItem="task" />
+            <TaskCard TaskItem="task" OnDelete="OnDelete" />
         </div>
     }
 }
@@ -28,7 +26,7 @@ else
 @code {
     IEnumerable<TaskItemDTO>? tasks;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         tasks = await data.GetDataAsync();
     }
@@ -38,14 +36,14 @@ else
         TaskItemDTO newTask = new() { 
             Id = tasks!.Count() + 1, 
             Name = $"Задача {tasks!.Count() + 1}", 
-            Description = $"Описание {tasks!.Count() + 1}", 
+            Theme = $"Тема {tasks!.Count() + 1}", 
             Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit." 
             };
         await data.AddAsync(newTask);
     }
 
-    async Task RemoveTaskItemAsync(TaskItemDTO task) {
-        await data.RemoveAsync(task);
-        tasks = await data.GetDataAsync();
+    async Task OnDelete(int Id) 
+    {
+        await data.RemoveAsync(Id);
     }
 }

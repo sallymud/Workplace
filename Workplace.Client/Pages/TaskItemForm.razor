@@ -7,36 +7,42 @@
 
 <h3>Форма редактирования #@Id</h3>
 
-<EditForm Model="@TaskItem" OnSubmit="SaveTask">
+<EditForm Model="TaskItem" OnValidSubmit="Submit">
     <p>
         Название:<br />
         <InputText id="name" class="form-control" style="width: 500px;" @bind-Value="TaskItem!.Name" />
     </p>
     <p>
-        Описание:<br />
-        <InputText id="description" class="form-control" style="width: 500px; margin-top: 7px;" @bind-Value="TaskItem!.Description" />
+        Тема:<br />
+        <InputText id="theme" class="form-control" style="width: 500px; margin-top: 7px;" @bind-Value="TaskItem!.Theme" />
     </p>
     <p>
         Текст:<br />
-        <InputTextArea id="text" class="form-control" style="width: 500px; height: 150px; margin-top: 5px; resize: both; min-width: 500px; max-width: 50%; min-height: 150px; max-height: 350px;" @bind-Value="TaskItem!.Text" />
+        <InputTextArea id="text" class="form-control" 
+            style="width: 500px; height: 150px; margin-top: 5px; resize: both; min-width: 500px; max-width: 50%; min-height: 150px; max-height: 350px;" 
+            @bind-Value="TaskItem!.Text" />
     </p>
     <button type="submit" class="btn btn-success">Сохранить</button>
+    <ValidationSummary />
 </EditForm>
 
 @code {
-    [Parameter, EditorRequired]
-    public TaskItemDTO? TaskItem { get; set; }
     [Parameter]
     public int Id { get; set; }
 
+    TaskItemDTO TaskItem { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        IEnumerable<TaskItemDTO>? rawData = await data.GetDataAsync();
-        TaskItem = rawData.ElementAt(Id - 1);
+        TaskItemDTO task = await data.GetTaskAsync(Id);
+        TaskItem!.Id = task.Id;
+        TaskItem!.Name = task.Name;
+        TaskItem!.Theme = task.Theme;
+        TaskItem!.Text = task.Text;
     }
-    void SaveTask()
+    async Task Submit()
     {
-        data.EditAsync(TaskItem!);
+        await data.SaveAsync(TaskItem!);
         navigate.NavigateTo("/");
     }
 }

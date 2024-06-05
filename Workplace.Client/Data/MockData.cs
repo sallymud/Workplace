@@ -6,36 +6,47 @@ namespace Workplace.Client.Data
     public class MockData : IDataService
     {
         private readonly List<TaskItemDTO> tasks = [
-            new TaskItemDTO() { Id = 1, Name = "Задача 1", Description = "Описание 1", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit."},
-            new TaskItemDTO() { Id = 2, Name = "Задача 2", Description = "Описание 2", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit."},
-            new TaskItemDTO() { Id = 3, Name = "Задача 3", Description = "Описание 3", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit."},
+            new TaskItemDTO() { Id = 1, Name = "Задача 1", Theme = "Тема 1", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit."},
+            new TaskItemDTO() { Id = 2, Name = "Задача 2", Theme = "Тема 2", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit."},
+            new TaskItemDTO() { Id = 3, Name = "Задача 3", Theme = "Тема 3", Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit."},
         ];
-        public async Task AddAsync(TaskItemDTO dto)
+        public async Task AddAsync(TaskItemDTO taskItem)
         {
-            await Task.Run(() => tasks.Add(dto));
+            await Task.Run(() => tasks.Add(taskItem));
         }
 
-        public async Task RemoveAsync(TaskItemDTO dto)
+        public async Task RemoveAsync(int Id)
         {
-            int id = dto.Id - 1;
-            await Task.Run(() => {
-                tasks.Remove(dto);
-                for (int i = id; i < tasks.Count; i++)
+            await Task.Run(() => 
+            {
+                tasks.Remove(tasks.First(x => x.Id == Id));
+                for (int i = Id-1; i < tasks.Count; i++)
                 {
                     if (tasks[i] != null)
                         tasks[i].Id--;
-                }});
+                }
+            });
         }
 
-        public async Task EditAsync(TaskItemDTO dto)
+        public async Task SaveAsync(TaskItemDTO taskItem)
         {
-            await Task.Run(() => tasks[dto.Id - 1] = dto);
+            await Task.Run(() => 
+            {
+                var task = tasks.First(x => x.Id == taskItem.Id);
+                tasks.Remove(task);
+                tasks.Add(taskItem);
+            });
         }
 
         public async Task<IEnumerable<TaskItemDTO>> GetDataAsync()
         {
             //await Task.Delay(1000);
             return await Task.FromResult<IEnumerable<TaskItemDTO>>(tasks);
+        }
+
+        public async Task<TaskItemDTO> GetTaskAsync(int id)
+        {
+            return await Task.FromResult<TaskItemDTO>(tasks.First(x => x.Id == id));
         }
     }
 }
