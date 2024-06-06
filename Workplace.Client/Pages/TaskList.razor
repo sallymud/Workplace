@@ -13,35 +13,57 @@
 else
 {
     <div>
-        <button type="button" class="btn btn-primary" style="position: absolute; top: 0; left: 0; margin: 70px 0 0 500px" @onclick="AddTaskItemAsync">Новая задача</button>
+        <button type="button" class="btn btn-primary" style="position: absolute; top: 0; left: 0; margin: 70px 0 0 500px" @onclick="OpenAddTaskDialog">Новая задача</button>
     </div>
     @foreach (var task in tasks)
     {
         <div class="card" style="width: 18rem; margin: 5px 10px 5px 0; display: inline-block;">
-            <TaskCard TaskItem="task" OnDelete="OnDelete" />
+            <TaskCard TaskItem="task" EditTaskItem="OpenEditTaskDialog" OnDelete="OnDelete" />
         </div>
     }
 }
 
+<TaskDialogCreate IsOpen="@isAddTaskDialogOpen" IsOpenChanged="@OnAddTaskDialogClosed" OnTaskAdded="@AddTaskItemAsync" />
+<TaskDialogEdit IsOpen="@isEditTaskDialogOpen" IsOpenChanged="@OnEditTaskDialogClosed" TaskItem="@editableTask" />
+
 @code {
     IEnumerable<TaskItemDTO>? tasks;
+    TaskItemDTO? editableTask;
+    private bool isAddTaskDialogOpen;
+    private bool isEditTaskDialogOpen;
 
     protected override async Task OnParametersSetAsync()
     {
         tasks = await data.GetDataAsync();
     }
-
-    async Task AddTaskItemAsync()
+    async Task OpenAddTaskDialog()
     {
-        TaskItemDTO newTask = new() { 
-            Id = tasks!.Count() + 1, 
-            Name = $"Задача {tasks!.Count() + 1}", 
-            Theme = $"Тема {tasks!.Count() + 1}", 
-            Text = "Lorem ipsum dolor sit amet consectetur adipisicing elit." 
-            };
-        await data.AddAsync(newTask);
+        await Task.Run(() => isAddTaskDialogOpen = true);
     }
 
+    async Task OnAddTaskDialogClosed(bool isOpen)
+    {
+        await Task.Run(() => isAddTaskDialogOpen = isOpen);
+    }
+
+    async Task OpenEditTaskDialog(TaskItemDTO editItem)
+    {
+        await Task.Run(() => {
+            isEditTaskDialogOpen = true;
+            editableTask = editItem;
+        });
+    }
+
+    async Task OnEditTaskDialogClosed(bool isOpen)
+    {
+        await Task.Run(() => isEditTaskDialogOpen = isOpen);
+    }
+
+    async Task AddTaskItemAsync(TaskItemDTO newTask)
+    {
+        await data.AddAsync(newTask);
+    }
+    
     async Task OnDelete(int Id) 
     {
         await data.RemoveAsync(Id);

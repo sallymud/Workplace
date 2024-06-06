@@ -5,7 +5,7 @@
     <h5 class="card-title">@TaskItem!.Name</h5>
     <h6 class="card-subtitle mb-2 text-body-secondary">@TaskItem!.Theme</h6>
     <p class="card-text">@TaskItem!.Text</p>
-    <button type="button" class="btn btn-outline-primary" @onclick="() => EditTaskItem(TaskItem.Id)">Изменить</button>
+    <button type="button" class="btn btn-outline-primary" @onclick="() => EditTaskItem.InvokeAsync(TaskItem)">Изменить</button>
     <button type="button" class="btn-close" aria-label="Close" 
                 style="scale: 0.7; position: absolute; top: 0; right: 0; margin: 10px 10px 0 0" 
                 @onclick="async () => await OnDelete.InvokeAsync(TaskItem.Id)"></button>
@@ -16,10 +16,8 @@
     public TaskItemDTO? TaskItem { get; set; }
 
     [Parameter, EditorRequired]
-    public EventCallback<int> OnDelete { get; set; }
+    public EventCallback<TaskItemDTO> EditTaskItem { get; set; }
 
-    void EditTaskItem(int id)
-    {
-        navigate.NavigateTo($"/tasklist/{id}");
-    }
+    [Parameter, EditorRequired]
+    public EventCallback<int> OnDelete { get; set; }
 }

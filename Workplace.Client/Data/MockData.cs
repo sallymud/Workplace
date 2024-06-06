@@ -1,5 +1,4 @@
-﻿
-using Workplace.Shared;
+﻿using Workplace.Shared;
 
 namespace Workplace.Client.Data
 {

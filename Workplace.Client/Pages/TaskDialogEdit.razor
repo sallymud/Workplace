@@ -1,0 +1,72 @@
+@inject IDataService data
+
+@if (IsOpen) 
+{
+    <div class="modal" tabindex="-1" style="display:block; background-color: rgba(0,0,0,0.5);"> 
+        <div class="modal-dialog"> 
+            <div class="modal-content"> 
+                <div class="modal-header"> 
+                    <h5 class="modal-title">Форма редактирования</h5> 
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="Cancel"></button> 
+                </div>
+
+                <div class="modal-body"> 
+                    <EditForm Model="@TaskItem" OnValidSubmit="HandleValidSubmit"> 
+                        <DataAnnotationsValidator /> 
+
+                        <div class="mb-3"> 
+                            <label for="taskName" class="form-label">Название задачи</label> 
+                            <InputText id="taskName" class="form-control" @bind-Value="TaskItem!.Name" /> 
+                            <ValidationMessage For="@(() => TaskItem.Name)" /> 
+                        </div>
+
+                        <div class="mb-3"> 
+                            <label for="taskTheme" class="form-label">Тема задачи</label> 
+                            <InputText id="taskTheme" class="form-control" @bind-Value="TaskItem!.Theme" /> 
+                            <ValidationMessage For="@(() => TaskItem.Theme)" /> 
+                        </div>
+
+                        <div class="mb-3"> 
+                            <label for="taskText" class="form-label">Текст задачи</label> 
+                            <InputText id="taskText" class="form-control" @bind-Value="TaskItem!.Text" /> 
+                            <ValidationMessage For="@(() => TaskItem.Text)" /> 
+                        </div>
+
+                        <div class="modal-footer"> 
+                            <button type="button" class="btn btn-danger" @onclick="Cancel">Отмена</button> 
+                            <button type="submit" class="btn btn-success">Сохранить</button> 
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public TaskItemDTO? TaskItem { get; set; } = new();
+
+    IEnumerable<TaskItemDTO>? tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await data.GetDataAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await IsOpenChanged.InvokeAsync(false); //функция сохранения работает без кнопки, упсииии. НАДА ИСПРАВИТЬ
+    }
+
+    private async void Cancel()
+    {
+        await IsOpenChanged.InvokeAsync(false);
+    }
+}
