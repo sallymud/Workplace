@@ -13,14 +13,77 @@
 else
 {
     <div>
-        <button type="button" class="btn btn-primary" style="position: absolute; top: 0; left: 0; margin: 70px 0 0 500px" @onclick="OpenAddTaskDialog">Новая задача</button>
+        <button type="button" class="btn btn-primary" style="position: absolute; top: 80px; right: 50px;" @onclick="OpenAddTaskDialog">Новая задача</button>
     </div>
-    @foreach (var task in tasks)
-    {
-        <div class="card" style="width: 18rem; margin: 5px 10px 5px 0; display: inline-block;">
-            <TaskCard TaskItem="task" EditTaskItem="OpenEditTaskDialog" OnDelete="OnDelete" />
+    <div class="container" style="margin-top: 40px;">
+        <div class="row" style="justify-content: center;">
+            <div class="col-md-3">
+                <div class="card text-center rounded-5" style="background-color: #9ec5fe; margin-bottom: 10px;">
+                    <div class="card-body">
+                        Расписание
+                    </div>
+                </div>
+
+                <div class="list-group" style="justify-content: center; overflow-y: scroll;">
+                    @foreach (var task in tasks)
+                    {
+                        @if (task.TType == TaskItemDTO.TaskType.Расписание)
+                        {
+                            <p style="margin-bottom: 7px;" >
+                                <div class="card" style="width: 18rem;">
+                                    <TaskCard TaskItem="task" EditTaskItem="OpenEditTaskDialog" OnDelete="OnDelete" />
+                                </div>
+                            </p>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center rounded-5" style="background-color: #efadce; margin-bottom: 10px; ">
+                    <div class="card-body">
+                        Мероприятия
+                    </div>
+                </div>
+
+                <div class="list-group" style="justify-content: center; overflow-y: scroll;">
+                    @foreach (var task in tasks)
+                    {
+                        @if (task.TType == TaskItemDTO.TaskType.Мероприятия)
+                        {
+                            <p style="margin-bottom: 7px;">
+                                <div class="card" style="width: 18rem;">
+                                    <TaskCard TaskItem="task" EditTaskItem="OpenEditTaskDialog" OnDelete="OnDelete" />
+                                </div>
+                            </p>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center rounded-5" style="background-color: #a6e9d5; margin-bottom: 10px;">
+                    <div class="card-body">
+                        Территориальный отдел
+                    </div>
+                </div>
+
+                <div class="list-group" style="justify-content: center; overflow-y: scroll;">
+                    @foreach (var task in tasks)
+                    {
+                        @if (task.TType == TaskItemDTO.TaskType.ТеррОтдел)
+                        {
+                            <p style="margin-bottom: 7px;">
+                                <div class="card" style="width: 18rem;">
+                                    <TaskCard TaskItem="task" EditTaskItem="OpenEditTaskDialog" OnDelete="OnDelete" />
+                                </div>
+                            </p>
+                        }
+                    }
+                </div>
+            </div>
         </div>
-    }
+    </div>
 }
 
 <TaskDialogCreate IsOpen="@isAddTaskDialogOpen" IsOpenChanged="@OnAddTaskDialogClosed" OnTaskAdded="@AddTaskItemAsync" />

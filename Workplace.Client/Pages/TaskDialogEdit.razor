@@ -28,8 +28,13 @@
 
                         <div class="mb-3">
                             <label for="newTaskContent" class="form-label">Текст задачи</label>
-                            <InputText id="newTaskContent" class="form-control" @bind-Value="newTaskItem!.Text" />
+                            <InputTextArea id="newTaskContent" class="form-control" style="height: 150px;" @bind-Value="newTaskItem!.Text" />
                             <ValidationMessage For="@(() => newTaskItem.Text)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="taskContent" class="form-label">Время окончания</label>
+                            <InputDate class="form-control" Type="InputDateType.DateTimeLocal" @bind-Value="newTaskItem!.DateOfCompletion" />
                         </div>
 
                         <div class="modal-footer">
@@ -66,6 +71,9 @@
                 newTaskItem.Name = TaskItem!.Name;
                 newTaskItem.Theme = TaskItem!.Theme;
                 newTaskItem.Text = TaskItem!.Text;
+                newTaskItem.DateOfCreation = TaskItem!.DateOfCreation;
+                newTaskItem.DateOfCompletion = TaskItem!.DateOfCompletion;
+                newTaskItem.TType = TaskItem!.TType;
             }
         });
     }

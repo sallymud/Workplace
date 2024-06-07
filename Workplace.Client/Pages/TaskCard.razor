@@ -1,13 +1,27 @@
-﻿@inject NavigationManager navigate
-@inject IDataService data
+﻿@inject IDataService data
+
+<style>
+    .card-title, .card-subtitle, .card-text {
+        display: -webkit-box; 
+        -webkit-line-clamp: 1; 
+        -webkit-box-orient: vertical; 
+        overflow: hidden;
+    }
+    .card-text {
+        -webkit-line-clamp: 2; 
+    }
+</style>
 
 <div class="card-body">
     <h5 class="card-title">@TaskItem!.Name</h5>
     <h6 class="card-subtitle mb-2 text-body-secondary">@TaskItem!.Theme</h6>
     <p class="card-text">@TaskItem!.Text</p>
+    <p class="card-subtitle">Н: @TaskItem!.DateOfCreation</p>
+    <p class="card-subtitle">К: @TaskItem!.DateOfCompletion</p>
+    @* <div class="status-point" style="background-color: #e35d6a; width: 15px; height: 15px; border-radius: 50%;"></div> *@
     <button type="button" class="btn btn-outline-primary" @onclick="() => EditTaskItem.InvokeAsync(TaskItem)">Изменить</button>
     <button type="button" class="btn-close" aria-label="Close" 
-                style="scale: 0.7; position: absolute; top: 0; right: 0; margin: 10px 10px 0 0" 
+                style="scale: 0.7; position: absolute; top: 0; right: 0; margin: 5px 5px 0 0" 
                 @onclick="async () => await OnDelete.InvokeAsync(TaskItem.Id)"></button>
 </div>
 

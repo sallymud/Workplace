@@ -15,32 +15,17 @@ namespace Workplace.Shared
         [Required(ErrorMessage = "Текст задачи обязательно для заполнения.")]
         public string? Text { get; set; }
 
-        public TaskType TType { get; set; }
-
-        public TaskSource Source { get; set; }
-
         public DateTime DateOfCreation { get; set; }
 
         public DateTime DateOfCompletion { get; set; }
 
-        public TaskStatus Status { get; set; }
-    }
+        public TaskType TType { get; set; }
 
-    public enum TaskType
-    {  
-        T_timeTable,
-        T_event
-    }
-
-    public enum TaskSource
-    {
-
-    }
-
-    public enum TaskStatus
-    {
-        Success,
-        Failure,
-        In_Process
+        public enum TaskType
+        {
+            Расписание,
+            Мероприятия,
+            ТеррОтдел
+        }
     }
 }

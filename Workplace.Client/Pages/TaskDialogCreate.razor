@@ -28,8 +28,23 @@
 
                         <div class="mb-3"> 
                             <label for="taskText" class="form-label">Текст задачи</label> 
-                            <InputText id="taskText" class="form-control" @bind-Value="TaskItem.Text" /> 
+                            <InputTextArea id="taskText" class="form-control" style="height: 150px;" @bind-Value="TaskItem.Text" /> 
                             <ValidationMessage For="@(() => TaskItem.Text)" /> 
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="taskContent" class="form-label">Время окончания</label>
+                            <InputDate class="form-control" Type="InputDateType.DateTimeLocal" @bind-Value="TaskItem.DateOfCompletion" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="taskContent" class="form-label">Тип задания</label>
+                            <InputSelect class = "form-control" @bind-Value="@TaskItem.TType">
+                                @foreach (var tt in Enum.GetValues(typeof(TaskItemDTO.TaskType)))
+                                {
+                                    <option class="form-control" value="@tt">@tt</option>
+                                }
+                            </InputSelect>
                         </div>
 
                         <div class="modal-footer"> 
@@ -65,13 +80,19 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await Task.Run(() => TaskItem = new TaskItemDTO());
+        await Task.Run(() => TaskItem = new TaskItemDTO() {
+            DateOfCompletion = DateTime.UtcNow
+        });
     }
-    private async Task HandleValidSubmit() 
+    
+    private async Task HandleValidSubmit()
     {
-        await Task.Run(() => TaskItem.Id = tasks!.Count() + 1);
-        await OnTaskAdded.InvokeAsync(TaskItem); 
-        await IsOpenChanged.InvokeAsync(false); 
+        await Task.Run(() => {
+            TaskItem.Id = tasks!.Count() + 1;
+            TaskItem.DateOfCreation = DateTime.UtcNow;
+        });
+        await OnTaskAdded.InvokeAsync(TaskItem);
+        await IsOpenChanged.InvokeAsync(false);
     }
 
     private async void Cancel() 
