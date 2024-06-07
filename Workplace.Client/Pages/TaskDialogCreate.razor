@@ -53,7 +53,7 @@
     [Parameter] 
     public EventCallback<TaskItemDTO> OnTaskAdded { get; set; } 
 
-    [Parameter, EditorRequired]
+    [EditorRequired]
     public TaskItemDTO TaskItem { get; set; } = new();
 
     IEnumerable<TaskItemDTO>? tasks;

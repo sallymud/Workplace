@@ -1,41 +1,42 @@
 @inject IDataService data
 
-@if (IsOpen) 
+@if (IsOpen)
 {
-    <div class="modal" tabindex="-1" style="display:block; background-color: rgba(0,0,0,0.5);"> 
-        <div class="modal-dialog"> 
-            <div class="modal-content"> 
-                <div class="modal-header"> 
-                    <h5 class="modal-title">Форма редактирования</h5> 
-                    <button type="button" class="btn-close" aria-label="Close" @onclick="Cancel"></button> 
+    <div class="modal" tabindex="-1" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Форма редактирования</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="Cancel"></button>
                 </div>
 
-                <div class="modal-body"> 
-                    <EditForm Model="@TaskItem" OnValidSubmit="HandleValidSubmit"> 
-                        <DataAnnotationsValidator /> 
+                <div class="modal-body">
+                    <EditForm Model="@newTaskItem">
+                        <DataAnnotationsValidator />
 
-                        <div class="mb-3"> 
-                            <label for="taskName" class="form-label">Название задачи</label> 
-                            <InputText id="taskName" class="form-control" @bind-Value="TaskItem!.Name" /> 
-                            <ValidationMessage For="@(() => TaskItem.Name)" /> 
+                        <div class="mb-3">
+                            <label for="newTaskName" class="form-label">Название задачи</label>
+                            <InputText id="newTaskName" class="form-control" @bind-Value="newTaskItem!.Name" />
+                            <ValidationMessage For="@(() => newTaskItem.Name)" />
                         </div>
 
-                        <div class="mb-3"> 
-                            <label for="taskTheme" class="form-label">Тема задачи</label> 
-                            <InputText id="taskTheme" class="form-control" @bind-Value="TaskItem!.Theme" /> 
-                            <ValidationMessage For="@(() => TaskItem.Theme)" /> 
+                        <div class="mb-3">
+                            <label for="newTaskDescription" class="form-label">Тема задачи</label>
+                            <InputText id="newTaskDescription" class="form-control" @bind-Value="newTaskItem!.Theme" />
+                            <ValidationMessage For="@(() =>newTaskItem.Theme)" />
                         </div>
 
-                        <div class="mb-3"> 
-                            <label for="taskText" class="form-label">Текст задачи</label> 
-                            <InputText id="taskText" class="form-control" @bind-Value="TaskItem!.Text" /> 
-                            <ValidationMessage For="@(() => TaskItem.Text)" /> 
+                        <div class="mb-3">
+                            <label for="newTaskContent" class="form-label">Текст задачи</label>
+                            <InputText id="newTaskContent" class="form-control" @bind-Value="newTaskItem!.Text" />
+                            <ValidationMessage For="@(() => newTaskItem.Text)" />
                         </div>
 
-                        <div class="modal-footer"> 
-                            <button type="button" class="btn btn-danger" @onclick="Cancel">Отмена</button> 
-                            <button type="submit" class="btn btn-success">Сохранить</button> 
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" @onclick="Cancel">Отмена</button>
+                            <button type="submit" class="btn btn-success" @onclick="HandleValidSubmit">Сохранить</button>
                         </div>
+
                     </EditForm>
                 </div>
             </div>
@@ -50,23 +51,35 @@
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }
 
-    [Parameter, EditorRequired]
-    public TaskItemDTO? TaskItem { get; set; } = new();
+    [Parameter]
+    public TaskItemDTO? TaskItem { get; set; }
 
-    IEnumerable<TaskItemDTO>? tasks;
+    [EditorRequired]
+    public TaskItemDTO newTaskItem { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        tasks = await data.GetDataAsync();
+        await Task.Run(() => {
+            if (TaskItem != null)
+            {
+                newTaskItem.Id = TaskItem!.Id;
+                newTaskItem.Name = TaskItem!.Name;
+                newTaskItem.Theme = TaskItem!.Theme;
+                newTaskItem.Text = TaskItem!.Text;
+            }
+        });
     }
 
     private async Task HandleValidSubmit()
     {
-        await IsOpenChanged.InvokeAsync(false); //функция сохранения работает без кнопки, упсииии. НАДА ИСПРАВИТЬ
+        await data.SaveAsync(newTaskItem);
+        await Task.Run(() => newTaskItem = new());
+        await IsOpenChanged.InvokeAsync(false);
     }
 
     private async void Cancel()
     {
+        await Task.Run(() => newTaskItem = new());
         await IsOpenChanged.InvokeAsync(false);
     }
 }
