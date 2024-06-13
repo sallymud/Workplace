@@ -1,6 +1,6 @@
 @page "/"
 
-@inject TimeTableDataService data
+@inject IScheduleDataService data
 
 <PageTitle>Расписание</PageTitle>
 
@@ -14,20 +14,33 @@ else
         @foreach (var ttd in weeks[currentWeekID].DaysInWeek!)
         {
             <div class="card" style="width: 500px; margin-bottom: 20px;">
-                <TimeTableDayCard TimeTableDay="ttd"/>
+                <h5 class="card-header" style="background-color: #520dc2; color: #fff; font-weight: 700;">@ttd!.Date</h5>
+                <div class="card-body">
+                    @if (ttd.ItemsInDay!.Count() <= 0)
+                    {
+                        <h5 style="font-style: italic; font-weight: 700; text-align: center; opacity: 0.5;">ТУТ НИЧЕГО НЕТ...</h5>
+                    }
+                    else
+                    {
+                        @foreach (var dayItem in ttd.ItemsInDay!)
+                        {
+                            <ScheduleItemCard TTItem="dayItem" />
+                        }
+                    }
+                </div>
             </div>
         }
     </div>
 }
 
 @code {
-    List<TimeTableWeek>? weeks { get; set; }
+    List<ScheduleWeek>? weeks { get; set; }
     [Parameter]
     public int currentWeekID { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        weeks = await data.GetDataAsync();
+        weeks = await data.GetAllWeeksAsync();
 
         foreach (var ttw in weeks)
         {
