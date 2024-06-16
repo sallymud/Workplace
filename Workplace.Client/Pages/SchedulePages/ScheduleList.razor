@@ -1,9 +1,21 @@
 @page "/"
+
 @using Workplace.Shared.Schedule
+@using System.ComponentModel.DataAnnotations;
 
 @inject IScheduleDataService data
 
 <PageTitle>Расписание</PageTitle>
+
+<style>
+    .alert_date {
+        width: 30%; 
+        position: absolute; 
+        right: 0; 
+        top: 0;
+        z-index: 10;
+    }
+</style>
 
 @if (days == null)
 {
@@ -11,34 +23,63 @@
 }
 else
 {
-    <div class="container" style="display: flex; justify-content: center; flex-direction: column; flex-wrap: wrap; width: 500px;">
-        @foreach (var sd in days)
-        {
-            <div class="card" style="width: 500px; margin-bottom: 20px;">
-                <h5 class="card-header" style="background-color: #520dc2; color: #fff; font-weight: 700;">@sd!.Date</h5>
-                <div class="card-body">
-                    @if (sd.ItemsInDay!.Count() <= 0)
-                    {
-                        <h5 style="font-style: italic; font-weight: 700; text-align: center; opacity: 0.5;">ТУТ НИЧЕГО НЕТ...</h5>
-                    }
-                    else
-                    {
-                        @foreach (var dayItem in sd.ItemsInDay!)
+    @if (InvalidDate) {
+        <Alert Color="AlertColor.Danger" class="alert_date" Dismissable="true">Введена некорректная дата</Alert>
+        InvalidDate = false;
+    }
+    <div class="container" style="display: flex; justify-content: center;">
+        <div class="schedule" style="width: 50%;">
+            @foreach (var sd in days)
+            {
+                <div class="card" style="width: 80%; margin-bottom: 20px;">
+                    <h5 class="card-header" style="background-color: #520dc2; color: #fff; font-weight: 700;">@sd!.Date</h5>
+                    <div class="card-body">
+                        @if (sd.ItemsInDay!.Count() <= 0)
                         {
-                            <ScheduleItemCard SItem="dayItem"></ScheduleItemCard>
+                            <h5 style="font-style: italic; font-weight: 700; text-align: center; opacity: 0.5;">ТУТ НИЧЕГО НЕТ...</h5>
                         }
-                    }
+                        else
+                        {
+                            @foreach (var dayItem in sd.ItemsInDay!)
+                            {
+                                <ScheduleItemCard SItem="dayItem"></ScheduleItemCard>
+                            }
+                        }
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
+        <div class="filtres" style="width: 30%;">
+            <InputDate class="form-control" Type="InputDateType.Date" @bind-Value="DateOfStart" style="width: 50%; margin-bottom: 10px;"/>
+            <InputDate class="form-control" Type="InputDateType.Date" @bind-Value="DateOfEnd" style="width: 50%; margin-bottom: 10px;"/>
+            <button type="button" class="btn btn-outline-primary" @onclick="SearchForDate">Найти расписание</button>
+        </div>
     </div>
 }
 
 @code {
     List<ScheduleDay>? days { get; set; }
+    [Parameter]
+    public DateOnly DateOfStart { get; set; }
+    [Parameter]
+    public DateOnly DateOfEnd { get; set; }
+
+    public bool InvalidDate { get; set; }
+
+    public async Task SearchForDate()
+    {
+        if (DateOfEnd.CompareTo(DateOfStart) < 0) {
+            InvalidDate = true;
+        }
+        else {
+            days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        days = await data.GetDayRangeAsync(new DateOnly(2024, 9, 15), new DateOnly(2024, 9, 17));
+        DateOfStart = DateOnly.FromDateTime(DateTime.Now);
+        DateOfEnd = DateOnly.FromDateTime(DateTime.Now.AddDays(3));
+        days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd);
     }
 }

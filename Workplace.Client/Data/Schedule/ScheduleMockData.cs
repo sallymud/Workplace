@@ -8,11 +8,11 @@ namespace Workplace.Client.Data.Schedule
     {
         public readonly List<ScheduleDay> data = [
 			new ScheduleDay {
-				Date = new DateOnly(2024, 9, 15),
+				Date = new DateOnly(2024, 6, 16),
 				ItemsInDay = []
 			},
 			new ScheduleDay {
-                Date = new DateOnly(2024, 9, 16),
+                Date = new DateOnly(2024, 6, 17),
                 ItemsInDay = [
                     new Scheduleltem() {
                         LessonInfo = new Lesson() {
@@ -136,7 +136,7 @@ namespace Workplace.Client.Data.Schedule
                 ]
             },
             new ScheduleDay {
-                Date = new DateOnly(2024, 9, 17),
+                Date = new DateOnly(2024, 6, 19),
                 ItemsInDay = [
                     new Scheduleltem() {
                         LessonInfo = new Lesson() {

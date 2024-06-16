@@ -26,7 +26,7 @@
     <h6 style="font-style: italic; opacity: 0.6;">@SItem.LessonInfo.Teachers![(int)SItem.LT > 2 ? (int)SItem.LT - 3 : (int)SItem.LT]</h6>
     <div class="card" style="border-color: #8540f5;">
         <div class="card-header" style="background-color: #e0cffc;">
-            <button type="button" class="btn btn-link" style="text-decoration: none; color: #000; border: none; width: 100%;" @onclick="ChangeOpenStudents"> Количество участников: @CountStudents(SItem)</button>
+            <button type="button" class="btn btn-link" style="text-decoration: none; color: #000; border: none; width: 100%;" @onclick="ChangeOpenStudents"> Количество участников: @stdCount</button>
         </div>
         @if (openStudents)
         {
@@ -47,6 +47,13 @@
     public Scheduleltem? SItem { get; set; }
     [Parameter]
     public bool openStudents { get; set; } = false;
+    [Parameter]
+    public int stdCount { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        stdCount = await CountStudents(SItem!);
+    }
 
     public async Task ChangeOpenStudents()
     {
@@ -55,9 +62,6 @@
 
     public async Task<int> CountStudents(Scheduleltem si)
     {
-        int result = 0;
-        foreach (var group in si.Groups!)
-            result += group.Students!.Length;
-        return await Task.FromResult<int>(result);
+        return await Task.FromResult<int>(si.Groups!.Sum(s => s.Students!.Count()));
     }
 }

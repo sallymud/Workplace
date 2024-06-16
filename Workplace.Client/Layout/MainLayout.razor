@@ -1,17 +1,46 @@
 ﻿@inherits LayoutComponentBase
+<div class="bb-page">
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    <Sidebar @ref="sidebar"
+             Href="/"
+             IconName="IconName.Bootstrap"
+             Title="Workplace.Client"
+             DataProvider="SidebarDataProvider" />
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div class="bb-top-row px-4 d-flex justify-content-end">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 
         <article class="content px-4">
-            @Body
+            <div class="py-2">
+                @Body
+            </div>
         </article>
     </main>
+
 </div>
+
+@code {
+    private Sidebar sidebar = default!;
+    private IEnumerable<NavItem> navItems = default!;
+
+    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
+    {
+        if (navItems is null)
+            navItems = GetNavItems();
+
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItems()
+    {
+        navItems = new List<NavItem>
+        {
+            new NavItem { Id = "1", Href = "/", IconName = IconName.Backpack, Text = "Расписание", Match=NavLinkMatch.All},
+            new NavItem { Id = "2", Href = "/tasklist", IconName = IconName.Clipboard2Check, Text = "Мои задачи"},
+        };
+
+        return navItems;
+    }
+}
