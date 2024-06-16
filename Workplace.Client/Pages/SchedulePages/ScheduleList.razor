@@ -1,0 +1,44 @@
+@page "/"
+@using Workplace.Shared.Schedule
+
+@inject IScheduleDataService data
+
+<PageTitle>Расписание</PageTitle>
+
+@if (days == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div class="container" style="display: flex; justify-content: center; flex-direction: column; flex-wrap: wrap; width: 500px;">
+        @foreach (var sd in days)
+        {
+            <div class="card" style="width: 500px; margin-bottom: 20px;">
+                <h5 class="card-header" style="background-color: #520dc2; color: #fff; font-weight: 700;">@sd!.Date</h5>
+                <div class="card-body">
+                    @if (sd.ItemsInDay!.Count() <= 0)
+                    {
+                        <h5 style="font-style: italic; font-weight: 700; text-align: center; opacity: 0.5;">ТУТ НИЧЕГО НЕТ...</h5>
+                    }
+                    else
+                    {
+                        @foreach (var dayItem in sd.ItemsInDay!)
+                        {
+                            <ScheduleItemCard SItem="dayItem"></ScheduleItemCard>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    List<ScheduleDay>? days { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        days = await data.GetDayRangeAsync(new DateOnly(2024, 9, 15), new DateOnly(2024, 9, 17));
+    }
+}

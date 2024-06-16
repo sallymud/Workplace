@@ -1,6 +1,6 @@
-﻿using Workplace.Shared;
+﻿using Workplace.Shared.Tasks;
 
-namespace Workplace.Client.Data
+namespace Workplace.Client.Data.Tasks
 {
     public interface IDataService
     {

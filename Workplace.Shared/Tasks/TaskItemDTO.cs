@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Workplace.Shared
+namespace Workplace.Shared.Tasks
 {
     public class TaskItemDTO
     {
