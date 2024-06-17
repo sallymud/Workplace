@@ -259,7 +259,7 @@ namespace Workplace.Client.Data.Schedule
                     result.Last().ItemsInDay = arr;
                 }
 
-                return await Task.FromResult<List<ScheduleDay>>(result);
+                return await Task.FromResult<List<ScheduleDay>>(result.Where(d => d.Date.CompareTo(border1) >= 0 && d.Date.CompareTo(border2) <= 0).ToList());
             }
         }
     }

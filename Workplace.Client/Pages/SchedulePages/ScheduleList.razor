@@ -52,8 +52,8 @@ else
         <div class="filtres" style="width: 30%;">
             <InputDate class="form-control" Type="InputDateType.Date" @bind-Value="DateOfStart" style="width: 50%; margin-bottom: 10px;"/>
             <InputDate class="form-control" Type="InputDateType.Date" @bind-Value="DateOfEnd" style="width: 50%; margin-bottom: 10px;"/>
-            <InputText class="form-control" @bind-Value="studentToSearch"/>
-            <button type="button" class="btn btn-outline-primary" @onclick="Search">Найти</button>
+            <InputText class="form-control" placeholder="Найти студента" @bind-Value="studentToSearch" style="margin-bottom: 10px;"/>
+            <button type="button" class="btn btn-outline-primary" @onclick="Search">Поиск расписания</button>
         </div>
     </div>
 }
@@ -75,7 +75,7 @@ else
             InvalidDate = true;
         }
         else {
-            days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch);
+            days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch!);
         }
     }
 
@@ -83,6 +83,6 @@ else
     {
         DateOfStart = DateOnly.FromDateTime(DateTime.Now);
         DateOfEnd = DateOnly.FromDateTime(DateTime.Now.AddDays(3));
-        days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch);
+        days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch!);
     }
 }
