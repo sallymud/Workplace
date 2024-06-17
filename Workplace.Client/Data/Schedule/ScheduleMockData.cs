@@ -222,6 +222,10 @@ namespace Workplace.Client.Data.Schedule
                                 new Student() {
                                     Id = 5,
                                     Name = "Т-Банк Сбербанкович"
+                                },
+                                new Student() {
+                                    Id = 10,
+                                    Name = "Саша Спилберг"
                                 }
                             ]
                         }]
@@ -235,9 +239,28 @@ namespace Workplace.Client.Data.Schedule
             return await Task.FromResult<ScheduleDay>(data.First(d => d.Date == dayDate));
         }
 
-        public async Task<List<ScheduleDay>> GetDayRangeAsync(DateOnly border1, DateOnly border2)
+        public async Task<List<ScheduleDay>> GetDayRangeAsync(DateOnly border1, DateOnly border2, string? studentName)
         {
-            return await Task.FromResult<List<ScheduleDay>>(data.Where(d => d.Date.CompareTo(border1) >= 0 && d.Date.CompareTo(border2) <= 0).ToList());
+            if (studentName == string.Empty || studentName == null)
+                return await Task.FromResult<List<ScheduleDay>>(data.Where(d => d.Date.CompareTo(border1) >= 0 && d.Date.CompareTo(border2) <= 0).ToList());
+            else
+            {
+                var result = new List<ScheduleDay>();
+                var targetDays = data
+                    .Where(d => d.ItemsInDay!.Any(l => l.Groups!.Any(g => g.Students!.Any(std => std.Name == studentName))))
+                    .ToList();
+
+                foreach (var day in targetDays)
+                {
+                    Scheduleltem[] arr = Array.Empty<Scheduleltem>();
+                    result.Add(new ScheduleDay() { Date = day.Date });
+                    if (day.ItemsInDay != null)
+                        arr = day.ItemsInDay.Where(l => l.Groups!.Any(g => g.Students!.Any(std => std.Name == studentName))).ToArray();
+                    result.Last().ItemsInDay = arr;
+                }
+
+                return await Task.FromResult<List<ScheduleDay>>(result);
+            }
         }
     }
 }

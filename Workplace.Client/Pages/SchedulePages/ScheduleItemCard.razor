@@ -55,6 +55,11 @@
         stdCount = await CountStudents(SItem!);
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        stdCount = await CountStudents(SItem!);
+    }
+
     public async Task ChangeOpenStudents()
     {
         await Task.Run(() => openStudents = !openStudents);
