@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Workplace.Shared.Schedule
 {
-    public class Scheduleltem
+    public class ScheduleItem
     {
+        public DateTime TimeSpending { get; set; }
         public Lesson? LessonInfo { get; set; }
-        public TimeOnly Time { get; set; }
         public LessonType LT { get; set; }
         public string? Location { get; set; }
         public Group[]? Groups { get; set; }

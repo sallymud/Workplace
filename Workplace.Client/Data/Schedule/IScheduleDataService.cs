@@ -4,7 +4,7 @@ namespace Workplace.Client.Data.Schedule
 {
     public interface IScheduleDataService
     {
-        Task<ScheduleDay> GetDayAsync(DateOnly dayDate);
-        Task<List<ScheduleDay>> GetDayRangeAsync(DateOnly border1, DateOnly border2, string studentName);
+        Task<List<ScheduleItem>> GetDayAsync(DateTime dayDate);
+        Task<List<ScheduleItem>> GetDayRangeAsync(DateTime border1, DateTime border2, string studentName);
     }
 }

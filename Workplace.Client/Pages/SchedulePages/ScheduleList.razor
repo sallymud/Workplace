@@ -17,7 +17,7 @@
     }
 </style>
 
-@if (days == null)
+@if (items == null)
 {
     <p>Loading ...</p>
 }
@@ -29,22 +29,12 @@ else
     }
     <div class="container" style="display: flex; justify-content: center;">
         <div class="schedule" style="width: 50%;">
-            @foreach (var sd in days)
+            @foreach (var si in items)
             {
                 <div class="card" style="width: 80%; margin-bottom: 20px;">
-                    <h5 class="card-header" style="background-color: #520dc2; color: #fff; font-weight: 700;">@sd!.Date</h5>
+                    <h5 class="card-header" style="background-color: #520dc2; color: #fff; font-weight: 700;">@si!.TimeSpending.Date</h5>
                     <div class="card-body">
-                        @if (sd.ItemsInDay!.Count() <= 0)
-                        {
-                            <h5 style="font-style: italic; font-weight: 700; text-align: center; opacity: 0.5;">ТУТ НИЧЕГО НЕТ...</h5>
-                        }
-                        else
-                        {
-                            @foreach (var dayItem in sd.ItemsInDay!)
-                            {
-                                <ScheduleItemCard SItem="dayItem"></ScheduleItemCard>
-                            }
-                        }
+                            <ScheduleItemCard SItem="si"></ScheduleItemCard>
                     </div>
                 </div>
             }
@@ -59,11 +49,11 @@ else
 }
 
 @code {
-    List<ScheduleDay>? days { get; set; }
+    private List<ScheduleItem>? items { get; set; }
     [Parameter]
-    public DateOnly DateOfStart { get; set; }
+    public DateTime DateOfStart { get; set; }
     [Parameter]
-    public DateOnly DateOfEnd { get; set; }
+    public DateTime DateOfEnd { get; set; }
     [Parameter]
     public string? studentToSearch { get; set; }
 
@@ -75,14 +65,14 @@ else
             InvalidDate = true;
         }
         else {
-            days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch!);
+            items = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch!);
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        DateOfStart = DateOnly.FromDateTime(DateTime.Now);
-        DateOfEnd = DateOnly.FromDateTime(DateTime.Now.AddDays(3));
-        days = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch!);
+        DateOfStart = DateTime.Now;
+        DateOfEnd = DateTime.Now.AddDays(3);
+        items = await data.GetDayRangeAsync(DateOfStart, DateOfEnd, studentToSearch!);
     }
 }
